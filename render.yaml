@@ -1,0 +1,31 @@
+# Safe & Fine Drinking Water — Render Blueprint: New > Blueprint > pick this repo.
+# Database: a free Neon (or Supabase) Postgres; paste its URL into DATABASE_URL.
+services:
+  - type: web
+    name: safe-fine-water
+    runtime: node
+    region: singapore
+    plan: free                 # use "starter" (~$7/month) for daily use: always on, no 1-minute wake-up
+    buildCommand: npm ci && npm run build
+    startCommand: npm start    # creates/updates tables and the first logins, then starts the app
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        sync: false            # Neon connection string (pooling OFF, without &channel_binding=require)
+      - key: SUPERADMIN_PASSWORD
+        sync: false            # PokitBio login "pokitbio"
+      - key: OWNER_PASSWORD
+        sync: false            # owner's first password, login "owner"
+      - key: RIDER_PASSWORD
+        sync: false            # rider's first password, login "rider"
+      - key: BUSINESS_NAME
+        value: "Safe & Fine Drinking Water"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: WA_DRY_RUN
+        value: "true"
